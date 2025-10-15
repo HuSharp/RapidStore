@@ -15,7 +15,7 @@ namespace container{
     }
 
     void ActiveReaderTracer::set_status(ReaderTraceBlock* block, uint64_t status) {
-        block->set_status(1);
+        block->set_status(status);
     }
 
     void ActiveReaderTracer::set_timestamp(ReaderTraceBlock* block, uint64_t timestamp) {
