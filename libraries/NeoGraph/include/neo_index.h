@@ -12,6 +12,7 @@
 #include <stack>
 #include <tbb/concurrent_map.h>
 #include <tbb/task_group.h>
+#include <mutex>
 
 #include "../utils/types.h"
 #include "neo_tree.h"
@@ -22,6 +23,7 @@
 namespace container {
     struct NeoGraphIndex {
         std::vector<std::unique_ptr<NeoTree>> *forest;
+        std::mutex forest_resize_mutex;
 
         NeoGraphIndex();
 

@@ -14,8 +14,12 @@ namespace container {
     }
 
     NeoTree* NeoGraphIndex::lock(uint64_t direction) {
-        if(forest->size() <= direction) {
-            forest->resize(direction + 1);
+        {
+            std::lock_guard<std::mutex> lock(forest_resize_mutex);
+            if (forest->size() <= direction)
+            {
+                forest->resize(direction + 1);
+            }
         }
         auto raw_direction = forest->at(direction).get();
         if(raw_direction == nullptr) {
@@ -199,17 +203,17 @@ namespace container {
 
     bool NeoGraphIndex::insert_vertex(uint64_t vertex, Property_t* property, WriterTraceBlock* trace_block) {
         auto direction = gen_tree_direction(vertex);
-        if(forest->size() <= direction) {
-            forest->resize(direction + 1);
+        {
+            std::lock_guard<std::mutex> lock(forest_resize_mutex);
+            if (forest->size() <= direction)
+            {
+                forest->resize(direction + 1);
+            }
         }
         auto raw_direction = forest->at(direction).get();
         if(raw_direction == nullptr) {
             auto new_tree = std::make_unique<NeoTree>(vertex & ~VERTEX_GROUP_MASK);
             new_tree->insert_vertex(vertex, property, trace_block);
-            if(forest->size() >= direction) {
-                // enlarge forest
-                forest->resize(direction + 1);
-            }
             (*forest)[direction] = std::move(new_tree);
         } else {
             raw_direction->insert_vertex(vertex, property, trace_block);
