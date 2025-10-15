@@ -1210,9 +1210,9 @@ namespace container {
 
     void NeoTreeVersion::remove_edge(uint64_t src, uint64_t dest, WriterTraceBlock* trace_block) {
 #ifndef NDEBUG
-        if(src != 2) {
-            return;
-        }
+        // if(src != 2) {
+        //     return;
+        // }
 #endif
         NeoVertex& vertex = vertex_map->at(src & VERTEX_GROUP_MASK);
         assert(vertex.exist);
