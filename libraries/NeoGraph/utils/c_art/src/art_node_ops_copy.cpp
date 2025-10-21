@@ -752,6 +752,9 @@ namespace container {
         auto target_byte = key[(*n)->depth];
         auto last_byte = value & 0xFF;
         auto child = find_child(*n, target_byte);
+        if (child == nullptr) {
+            return NOT_FOUND;
+        }
         assert(child != nullptr && IS_LEAF(*child));
         assert((*n)->num_children > 0);
 #ifndef NDEBUG

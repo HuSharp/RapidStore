@@ -178,7 +178,7 @@ namespace container {
                 if(child == nullptr) {
                     break;
                 } else if(IS_LEAF(*child)) {
-                    if(LEAF_RAW(*child)->has_element(value, 0) != need_exist) {
+                    if (LEAF_RAW(*child)->has_element(value, GET_OFFSET(*child)) != need_exist) {
                         delete path;
                         return {nullptr, nullptr, nullptr};
                     } else {
@@ -196,7 +196,7 @@ namespace container {
                     if(child == nullptr) {
                         break;
                     } else if(IS_LEAF(*child)) {
-                        if(LEAF_RAW(*child)->has_element(value, 0) != need_exist) {
+                        if (LEAF_RAW(*child)->has_element(value, GET_OFFSET(*child)) != need_exist) {
                             delete path;
                             return {nullptr, nullptr, nullptr}; // already exists
                         } else {
