@@ -13,7 +13,7 @@ namespace container {
     public:
         RangeNodeSegment_t* node_block;
         NeoTreeVersion* next;
-        uint64_t timestamp;
+        uint64_t timestamp{0};
         VertexMap_t * vertex_map;
         Bitmap<INDEPENDENT_MAP_BLOCK_NUM> independent_map{};
         bool resource_handled{};

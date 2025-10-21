@@ -299,15 +299,15 @@ namespace container{
     std::atomic<uint64_t> read_txn_num;
 
     void add_read_txn_num() {
-        read_txn_num += 1;
+        read_txn_num.fetch_add(1);
     }
 
     void dec_read_txn_num() {
-        read_txn_num -= 1;
+        read_txn_num.fetch_sub(1);
     }
 
     uint64_t get_read_txn_num() {
-        return read_txn_num;
+        return read_txn_num.load();
     }
 
     ActiveReaderTracer global_tracer;

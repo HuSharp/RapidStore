@@ -62,6 +62,8 @@ namespace container {
 namespace container {
     ReadTransaction::ReadTransaction(NeoGraphIndex* index_impl, const TransactionManager* tm): index_impl(index_impl), m_vertex_count(tm->vertex_count()), m_edge_count(tm->edge_count()) {
         trace_block = reader_register();
+        assert(trace_block != nullptr);
+        add_read_txn_num();
         timestamp = tm->get_read_timestamp();
         set_timestamp(trace_block, timestamp);
     }
@@ -134,6 +136,7 @@ namespace container {
 
     bool ReadTransaction::commit() {
         reader_unregister(trace_block);
+        dec_read_txn_num();
         return true;
     }
 }

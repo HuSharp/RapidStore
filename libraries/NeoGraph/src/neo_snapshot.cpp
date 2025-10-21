@@ -5,6 +5,8 @@ namespace container {
     NeoSnapshot::NeoSnapshot(const TransactionManager *tm) : index(tm->index_impl),
                                                                         versions(new std::vector<NeoTreeVersion *>()) {
         trace_block = reader_register();
+        assert(trace_block != nullptr);
+        add_read_txn_num();
         timestamp = tm->get_read_timestamp();
         set_timestamp(trace_block, timestamp);
         // add all versions
@@ -15,13 +17,14 @@ namespace container {
                 versions->at(idx) = tree->find_version(timestamp);
             }
         }
-        add_read_txn_num();
         set_status(trace_block, 2); // running
     }
 
     NeoSnapshot::NeoSnapshot(const NeoSnapshot &other) : index(other.index), timestamp(other.timestamp),
                                                          versions(new std::vector<NeoTreeVersion *>) {
         trace_block = reader_register();
+        assert(trace_block != nullptr);
+        add_read_txn_num();
         set_timestamp(trace_block, timestamp);
         versions->resize(other.versions->size());
         for (int i = 0; i < other.versions->size(); i++) {
@@ -33,7 +36,6 @@ namespace container {
                 }
             }
         }
-        add_read_txn_num();
         set_status(trace_block, 2); // running
     }
 

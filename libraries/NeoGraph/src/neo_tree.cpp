@@ -302,7 +302,7 @@ namespace container {
         while(cur != nullptr) {
             if(timestamp >= cur->timestamp) {
                 // add reference
-                cur->ref_cnt = cur->ref_cnt + 1;
+                cur->ref_cnt.fetch_add(1);
                 return cur;
             }
             cur = cur->next;
@@ -377,6 +377,7 @@ namespace container {
     }
 
     void NeoTree::gc(WriterTraceBlock* trace_block) {
+        assert(!uncommited_version);
         uncommited_version = nullptr;
         version_num += 1;
         if(version_num > 2) {
@@ -392,7 +393,7 @@ namespace container {
         if(direct_gc_flag) {  // try direct gc
 //                auto next_timestamp = version_head->next->timestamp;
 //                auto head_timestamp = version_head->timestamp;
-            if (version_head->next->ref_cnt == 0 && !version_head->next->resource_handled && get_read_txn_num() == 0) {
+            if (version_head->next->ref_cnt.load() == 0 && !version_head->next->resource_handled && get_read_txn_num() == 0) {
 //                    if(*read_txn_count != 0) {
 //                        std::vector<uint64_t> actives;
 //                        get_active_reader_info(actives);
