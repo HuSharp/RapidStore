@@ -30,12 +30,16 @@ namespace container {
     void TransactionManager::finish_commit(uint64_t timestamp) {
         // read_timestamp + 1 only when read_timestamp = timestamp - 1, CAS
         auto target = timestamp - 1;
-        while(!read_timestamp.compare_exchange_weak(target, timestamp, std::memory_order_relaxed)) {
+        while (true) {
+            auto temp_target = target; // Copy for CAS
+            if (read_timestamp.compare_exchange_weak(temp_target, timestamp, std::memory_order_relaxed)) {
+                break; // Success
+            }
         }
     }
 
     uint64_t TransactionManager::get_read_timestamp() const {
-        return read_timestamp;
+        return read_timestamp.load();
     }
 
     WriteTransaction* TransactionManager::get_write_transaction() {
